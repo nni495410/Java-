@@ -1,0 +1,74 @@
+@startuml
+
+' クラスの定義
+class MainApp {
+    + {static} main(args : String[]) : void
+    ' EmployeeManagerクラスの初期化
+    ' EmployeeViewの初期化
+}
+
+class Employee {
+    - id : int
+    - name : String
+    - birthDate : LocalDate
+
+    ' コンストラクタ
+    + Employee(id : String, name : String, birthDate : LocalDate)
+    ' ゲッター処理
+    + getId() : String
+    + getName() : String
+    + getBirthDate() : LocalDate
+}
+
+class EmployeeManager {
+    ' 保存するファイル
+    - DATA_FOLDER : String
+    - LOG_FOLDER : String
+    - CSV_FILE : String
+    ' 社員リスト
+    - employees : List<Employee>
+    ' ログ（動作履歴やエラーが起きた時の記録用）
+    - logger : Logger
+
+    ' コンストラクタ
+    + EmployeeManager()
+    ' ログの準備とファイルの読み込み処理
+    - setupLogger() : void
+    - loadEmployees() : void
+    ' 新しい社員を追加
+    + addEmployee(employee : Employee) : void
+    ' 指定された社員を削除
+    + removeEmployee(employee : Employee) : void
+    ' 現在の社員を保存
+    - saveEmployees() : void
+    + getEmployees() : List<Employee>
+}
+
+class EmployeeView{
+    ' このクラスのインスタンス
+    - manager : EmployeeManager
+    ' 画面に社員の一覧を表示するための部品
+    - employeeListModel : DefaultListModel<String>
+    - employeeList : JList<String>
+
+    ' コンストラクタ
+    + EmployeeView(manager : EmployeeManager)
+    ' 画面デザインの部分
+    - setupUI() : void
+    - addEmployee() : void
+    - removeEmployee() : void
+    - refreshEmployeeList() : void
+
+}
+
+' 関連・関係性の定義
+EmployeeView -up-|> JFrame : 継承
+
+MainApp ..> EmployeeManager : 生成
+MainApp ..> EmployeeView : 生成
+
+EmployeeView "1" --> "1" EmployeeManager : 処理を依頼
+EmployeeManager "1" o-- "*" Employee : リストで保持
+EmployeeView ..> Employee : ダイアログから生成
+
+@enduml
